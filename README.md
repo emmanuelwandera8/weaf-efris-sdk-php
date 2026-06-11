@@ -163,13 +163,22 @@ try {
 ### 3. Product Catalog Management
 
 ```php
-// Register a new product
+// Register new products with EFRIS (takes a nested 'products' array)
 $client->products->register([
-    'itemName' => 'Custom API Software Package',
-    'itemCode' => 'SW-PKG-01',
-    'itemType' => 'GOODS',
-    'unitPrice' => 150000,
-    'taxRate' => 18
+    'products' => [
+        [
+            'goodsName' => 'Custom API Software Package',
+            'goodsCode' => 'SW-PKG-01',
+            'measureUnit' => 'PCE',
+            'unitPrice' => '150000',
+            'currency' => '101',
+            'commodityCategoryId' => '10111301',
+            'haveExciseTax' => '102',
+            'description' => 'Custom software application package integration API',
+            'stockPrewarning' => '10',
+            'havePieceUnit' => '102'
+        ]
+    ]
 ]);
 
 // List registered products
