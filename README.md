@@ -16,7 +16,16 @@ A modern, object-oriented PHP SDK for integrating with the WEAF EFRIS API. This 
 
 ## Installation
 
-### 1. Installation via Local Composer Repository
+### 1. Installation via Packagist (Recommended)
+
+You can install the SDK as a standard dependency from Packagist:
+
+```bash
+composer require weaf/efris-sdk-php
+```
+
+### 2. Installation via Local Composer Repository
+
 If you've placed this SDK inside your main project directory, you can add it to your main project's `composer.json` using local repository mapping:
 
 ```json
@@ -36,7 +45,8 @@ Then run:
 composer update weaf/efris-sdk-php
 ```
 
-### 2. Manual Installation
+### 3. Manual Installation
+
 If not using Composer autoloading, you can register a simple manual PSR-4 autoloader:
 
 ```php
