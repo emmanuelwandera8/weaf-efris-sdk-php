@@ -1,0 +1,21 @@
+{
+    "name": "weaf/efris-sdk-php",
+    "description": "Modern PHP SDK for WEAF EFRIS integration in Uganda",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "WEAF Company Uganda Ltd",
+            "email": "services@weafcompany.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.4",
+        "ext-curl": "*",
+        "ext-json": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Weaf\\Efris\\": "src/"
+        }
+    }
+}
