@@ -162,26 +162,109 @@ try {
 
 ### 3. Product Catalog Management
 
+Register new products or update existing products with the EFRIS (Electronic Fiscal Receipting and Invoicing Solution) system. This allows you to submit product/service details to the Uganda Revenue Authority (URA) for tax compliance and fiscal receipting purposes.
+
+#### Prerequisites
+- A valid EFRIS API access token.
+- Company TIN must be configured and active in your account context.
+
+#### Field Specifications
+
+| Field Name | Type | Requirement | Description / Value |
+| :--- | :--- | :--- | :--- |
+| `goodsName` | String | **Required** | The name of the product or service. |
+| `goodsCode` | String | **Required** | The unique code identifying the product. |
+| `measureUnit` | String | **Required** | The primary unit of measure (e.g., `PCE` for pieces, `DZN` for dozen). |
+| `unitPrice` | String | **Required** | Price per primary unit. |
+| `currency` | String | **Required** | Currency code (e.g., `101` for Uganda Shillings - UGX). |
+| `commodityCategoryId` | String | **Required** | URA Commodity Category Code (must pass the category code, not the name). |
+| `haveExciseTax` | String | **Required** | Excise tax flag: `101` (Yes) or `102` (No). |
+| `description` | String | **Required** | A brief description of the product or service. |
+| `stockPrewarning` | String | **Required** | Threshold quantity for low stock warnings. |
+| `havePieceUnit` | String | **Required** | Dual unit indicator: `101` (supports 2 units) or `102` (1 unit only). |
+| `operationType` | String | Optional | `101` for New Registration (default) or `102` for Updating existing. |
+| `pieceMeasureUnit` | String | Optional | Secondary measure unit code (required if `havePieceUnit` is `101`). |
+| `pieceUnitPrice` | String | Optional | Price per secondary unit (required if `havePieceUnit` is `101`). |
+| `packageScaledValue` | String | Optional | Main package conversion ratio (required if `havePieceUnit` is `101`, usually `1`). |
+| `pieceScaledValue` | String | Optional | Secondary package conversion ratio (required if `havePieceUnit` is `101`, e.g. `12` pieces). |
+| `exciseDutyCode` | String | Optional | Excise duty code if applicable. |
+
+> [!NOTE]
+> **Exports (Customs Fields):** For exported products, include the customs-specific fields: `customsMeasureUnit`, `customsScaledValue`, `customsUnitPrice`, and `packageScaledValueCustoms`. When updating existing exported items, set `operationType` to `"102"` and include these fields to keep customs data synchronized.
+
+#### Sample Category Codes
+
+| Category Code | Category Name | Type |
+| :--- | :--- | :--- |
+| **81111810** | Software coding service | Services |
+| **90101501** | Restaurants | Services |
+| **50202306** | Soft drinks | Inventory / Products |
+| **53131619** | Cosmetics | Inventory / Products |
+| **95141708** | Office kitchen | Inventory / Products |
+| **11121604** | Soft timber | Inventory / Products |
+
+#### Unit of Measure Payload Scenarios
+
+##### Scenario A: Single Unit of Measure (1 Unit)
+If the item supports only one unit of measure, set `havePieceUnit` to `"102"` and pass empty strings `""` for the secondary unit fields:
+
 ```php
-// Register new products with EFRIS (takes a nested 'products' array)
 $client->products->register([
     'products' => [
         [
-            'goodsName' => 'Custom API Software Package',
-            'goodsCode' => 'SW-PKG-01',
+            'goodsName' => 'Software Coding Service',
+            'goodsCode' => 'SRV-SW-01',
             'measureUnit' => 'PCE',
             'unitPrice' => '150000',
             'currency' => '101',
-            'commodityCategoryId' => '10111301',
+            'commodityCategoryId' => '81111810',
             'haveExciseTax' => '102',
-            'description' => 'Custom software application package integration API',
-            'stockPrewarning' => '10',
-            'havePieceUnit' => '102'
+            'description' => 'Custom software coding services per hour',
+            'stockPrewarning' => '1',
+            'havePieceUnit' => '102', // Single unit of measure
+            'pieceMeasureUnit' => '',
+            'pieceUnitPrice' => '',
+            'packageScaledValue' => '',
+            'pieceScaledValue' => '',
+            'exciseDutyCode' => '',
+            'operationType' => '101'
         ]
     ]
 ]);
+```
 
-// List registered products
+##### Scenario B: Dual Unit of Measure (2 Units)
+If the item supports two units of measure (e.g. buying/selling in dozens and pieces), set `havePieceUnit` to `"101"` and fill in the secondary unit details:
+
+```php
+$client->products->register([
+    'products' => [
+        [
+            'goodsName' => 'Sample Deemed Item',
+            'goodsCode' => 'DEEMED-001',
+            'measureUnit' => 'DZN', // Main unit (Dozen)
+            'unitPrice' => '10000', // Price per dozen
+            'currency' => '101',
+            'commodityCategoryId' => '10111301',
+            'haveExciseTax' => '102',
+            'description' => 'Deemed goods with dual units of measure support',
+            'stockPrewarning' => '1',
+            'havePieceUnit' => '101', // Supports dual units
+            'pieceMeasureUnit' => 'PCE', // Secondary unit (Piece)
+            'pieceUnitPrice' => '1000', // Price per piece
+            'packageScaledValue' => '1', // 1 dozen conversion
+            'pieceScaledValue' => '12', // Equals 12 pieces
+            'exciseDutyCode' => '',
+            'operationType' => '101'
+        ]
+    ]
+]);
+```
+
+##### Listing Registered Products
+
+```php
+// Retrieve the list of all registered goods and services
 $products = $client->products->list();
 ```
 

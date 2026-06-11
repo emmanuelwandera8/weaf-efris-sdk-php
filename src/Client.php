@@ -86,7 +86,7 @@ class Client
             'token_name' => $tokenName
         ];
 
-        $response = $this->transport->post('/auth/generate-token', $payload);
+        $response = $this->transport->post('/v1/auth/generate-token', $payload);
 
         if (isset($response['data']['token'])) {
             $token = $response['data']['token'];
@@ -108,7 +108,7 @@ class Client
     {
         $payload = ['token' => $token];
         try {
-            $response = $this->transport->post('/auth/validate-token', $payload);
+            $response = $this->transport->post('/v1/auth/validate-token', $payload);
             return isset($response['data']['token_valid']) && $response['data']['token_valid'] === true;
         } catch (WeafException $e) {
             return false;
@@ -125,7 +125,7 @@ class Client
     public function refreshToken(string $currentToken): string
     {
         $payload = ['token' => $currentToken];
-        $response = $this->transport->post('/auth/refresh-token', $payload);
+        $response = $this->transport->post('/v1/auth/refresh-token', $payload);
 
         if (isset($response['data']['token'])) {
             $newToken = $response['data']['token'];
