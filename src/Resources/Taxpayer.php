@@ -5,7 +5,7 @@ namespace Weaf\Efris\Resources;
 use Weaf\Efris\Exceptions\WeafException;
 
 /**
- * Manages taxpayer query and validation endpoints.
+ * Manages taxpayer query, branch listing, master data lookup, and validation endpoints.
  */
 class Taxpayer extends BaseResource
 {
@@ -55,6 +55,19 @@ class Taxpayer extends BaseResource
     }
 
     /**
+     * Get company branches from EFRIS.
+     *
+     * @param string|null $tinOverride Optional company TIN override
+     * @return array Branches list details
+     * @throws WeafException
+     */
+    public function getBranches(?string $tinOverride = null): array
+    {
+        $tin = $this->getTin($tinOverride);
+        return $this->client->transport()->get("/{$tin}/branches");
+    }
+
+    /**
      * Get excise duty configuration.
      *
      * @param string|null $tinOverride Optional company TIN override
@@ -65,5 +78,18 @@ class Taxpayer extends BaseResource
     {
         $tin = $this->getTin($tinOverride);
         return $this->client->transport()->get("/{$tin}/excise-duty");
+    }
+
+    /**
+     * Retrieve global EFRIS master data configuration (such as code dictionaries).
+     *
+     * @param string|null $tinOverride Optional company TIN override
+     * @return array Master data lists
+     * @throws WeafException
+     */
+    public function getMasterData(?string $tinOverride = null): array
+    {
+        $tin = $this->getTin($tinOverride);
+        return $this->client->transport()->get("/{$tin}/master-data");
     }
 }
