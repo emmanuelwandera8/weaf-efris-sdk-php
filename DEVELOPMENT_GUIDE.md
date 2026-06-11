@@ -16,6 +16,17 @@ Run Composer inside your project directory to download and install the package f
 composer require weaf/efris-sdk-php
 ```
 
+> [!TIP]
+> **Troubleshooting Installation Errors (PHP Version / Script Mismatch):**
+> If you encounter errors stating that other locked packages require a higher PHP version than what your local CLI is running, you can bypass environment checks using:
+> ```bash
+> composer require weaf/efris-sdk-php --ignore-platform-reqs
+> ```
+> If your local environment scripts hang (e.g. Laravel package discovery attempting to connect to a missing database or redis service), you can also bypass them with:
+> ```bash
+> composer require weaf/efris-sdk-php --ignore-platform-reqs --no-scripts
+> ```
+
 ### 2. Basic Client Initialization
 Initialize the client using your WEAF API credentials or a pre-generated token:
 
