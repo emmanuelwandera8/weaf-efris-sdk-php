@@ -78,7 +78,7 @@ Alternatively, initialize using account credentials to generate tokens dynamical
 
 ```php
 $client = new Client([
-    'username' => 'services@example.com',
+    'username' => 'services@weafcompany.com',
     'password' => 'SecurePassword123',
     'defaultTin' => '1000251604',
     'environment' => 'sandbox'
